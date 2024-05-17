@@ -1,0 +1,99 @@
+#include <stdio.h>
+#include <math.h>
+
+int main(){
+
+    float Tt=1.0, Tp=52.0;
+
+//calculate  max no. of packets to be transmitted
+    float a = Tp/Tt;
+    float maxPak = (int)(1+2*a);
+    printf("Maximum number of packets to be transmitted: %f\n",maxPak);
+//No. of bits in sequence number
+    int nbits=log2(maxPak);
+    printf("Number of bits in sequence number: %d\n",nbits);
+
+//Senders Window
+    float swd;
+    swd= pow(2,nbits);
+    printf("Senders Window: %f\n",swd);
+//Maximum Throughput
+    double mxThru;
+    mxThru = (swd/maxPak)*100;
+    printf("Maximum Throughput: %f\n",mxThru);
+
+    int trans =0, outstd =0, ack =0;
+    int time = 0;
+    int rtt = Tt+Tp+Tp;
+
+    outstd=maxPak-swd;
+
+
+    while(1){
+        printf("At Time %d: ",time);
+        printf("Transmitted: %d  ",trans);
+        printf("Outstanding: %d  ",outstd);
+        printf("Acknowledge: %d  \n",ack);
+
+        if(time==swd){
+            time = rtt;
+            break;
+        }
+
+//        if(trans==100){
+//            break;
+//        }
+
+        trans++;
+        time++;
+    }
+
+    int out = outstd;
+    int ti = time;
+
+    while(1){
+        time++;
+        trans++;
+        ack++;
+        outstd--;
+        printf("At Time %d: ",time);
+        printf("Transmitted: %d  ",trans);
+        printf("Outstanding: %d  ",outstd);
+        printf("Acknowledge: %d  \n",ack);
+
+        if(time == ti+out){
+            break;
+        }
+    }
+
+    while(1){
+        time++;
+        ack++;
+        printf("At Time %d: ",time);
+        printf("Transmitted: %d  ",trans);
+        printf("Outstanding: %d  ",outstd);
+        printf("Acknowledge: %d  \n",ack);
+
+        if(time==ti+swd){
+            break;
+        }
+    }
+    time = ti+rtt-1;
+    while(1){
+        time++;
+        ack++;
+        printf("At Time %d: ",time);
+        printf("Transmitted: %d  ",trans);
+        printf("Outstanding: %d  ",outstd);
+        printf("Acknowledge: %d  \n",ack);
+
+        if(ack==maxPak){
+            break;
+        }
+    }
+}
+
+
+
+
+
